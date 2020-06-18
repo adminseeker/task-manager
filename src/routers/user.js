@@ -3,6 +3,7 @@ const User = require("../models/user");
 const auth = require("../middleware/auth");
 const multer = require("multer");
 const sharp = require("sharp");
+const mailer = require("../mailer/mailer");
 
 const router = new express.Router();
 
@@ -12,6 +13,8 @@ router.post("/users",async (req,res)=>{
         await user.save()
         const token = await user.generateAuthToken();
         res.status(201).send({user,token});
+        text="Welcome! " + user.name + " Your account in task-manager has been created successfully!";
+        await mailer(text,user.email);
     }catch(e){
         res.status(400).send(e);    
     }
@@ -80,6 +83,8 @@ router.delete("/users/me",auth,async (req,res)=>{
         const user = req.user[0];
         await user.remove();
         res.send(user);
+        text="Sorry to see you leave us " + user.name + " Your account in task-manager has been deleted successfully!. We hope to see you soon again!";
+        await mailer(text,user.email);
     }catch(e){
         res.status(500).send();
     }
