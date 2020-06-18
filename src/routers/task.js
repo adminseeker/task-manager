@@ -1,6 +1,7 @@
 const express = require("express");
 const Task = require("../models/task");
 const auth = require("../middleware/auth");
+
 const router = new express.Router();
 
 router.post("/tasks",auth,async (req,res)=>{
@@ -81,5 +82,6 @@ router.delete("/tasks/:id",auth,async (req,res)=>{
         res.status(500).send();
     }
 });
+
 
 module.exports = router;
