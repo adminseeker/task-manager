@@ -19,11 +19,16 @@ router.get("/tasks",auth,async (req,res)=>{
     try{
         const limit = parseInt(req.query.limit);
         const skip = parseInt(req.query.skip);
+        const sort ={};
+        if(req.query.sortBy){
+            const parts = req.query.sortBy.split(":");
+            sort[parts[0]]=parts[1]==="desc"? -1 : 1;
+        }
         if(req.query.completed){
-            const tasks = await Task.find({owner:req.user[0]._id,completed:req.query.completed==="true"},{},{limit,skip});
+            const tasks = await Task.find({owner:req.user[0]._id,completed:req.query.completed==="true"},{},{limit,skip,sort});
             res.send(tasks);
         }else{
-            const tasks = await Task.find({owner:req.user[0]._id},{},{limit,skip});
+            const tasks = await Task.find({owner:req.user[0]._id},{},{limit,skip,sort});
             res.send(tasks);
         } 
     }catch(e){
