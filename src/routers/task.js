@@ -17,11 +17,13 @@ router.post("/tasks",auth,async (req,res)=>{
 });
 router.get("/tasks",auth,async (req,res)=>{
     try{
+        const limit = parseInt(req.query.limit);
+        const skip = parseInt(req.query.skip);
         if(req.query.completed){
-            const tasks = await Task.find({owner:req.user[0]._id,completed:req.query.completed==="true"});
+            const tasks = await Task.find({owner:req.user[0]._id,completed:req.query.completed==="true"},{},{limit,skip});
             res.send(tasks);
         }else{
-            const tasks = await Task.find({owner:req.user[0]._id});
+            const tasks = await Task.find({owner:req.user[0]._id},{},{limit,skip});
             res.send(tasks);
         } 
     }catch(e){
